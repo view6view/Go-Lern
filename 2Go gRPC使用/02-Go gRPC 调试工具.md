@@ -9,7 +9,7 @@
 
 当我们在写 HTTP 接口的时候，使用的是 Postman 进行接口调试，那么在写 gRPC 接口的时候，有没有类似于 Postman 的调试工具呢？
 
-![](https://github.com/xinliangnote/Go/blob/master/02-Go%20gRPC/images/2_grpc_1.gif)
+![2_grpc_1.gif](images/2_grpc_1-16513084541695.gif)
 
 
 这是有的。
@@ -30,7 +30,7 @@ https://github.com/fullstorydev/grpcui
 
 `.proto` 文件：
 
-```
+```go
 syntax = "proto3"; // 指定 proto 版本
 
 package listen;     // 指定包名
@@ -61,7 +61,7 @@ message Response {
 
 再看下 ListenData 方法：
 
-```
+```go
 func (l *ListenController) ListenData(ctx context.Context, in *listen.Request) (*listen.Response, error) {
 	return &listen.Response{Message : fmt.Sprintf("[%s]", in.Name)}, nil
 }
@@ -75,7 +75,7 @@ https://github.com/xinliangnote/go-jaeger-demo/tree/master/listen
 
 #### 启动服务
 
-```
+```sh
 cd listen && go run main.go
 ```
 
@@ -87,7 +87,7 @@ cd listen && go run main.go
 
 根据官方 `README.md` 文档安装即可。
 
-```
+```sh
 go get github.com/fullstorydev/grpcui
 go install github.com/fullstorydev/grpcui/cmd/grpcui
 ```
@@ -121,7 +121,7 @@ Failed to compute set of methods to expose: server does not support the reflecti
 
 这种情况下，加个反射就可以了，在 listen 的 main.go 新增如下代码即可：
 
-```
+```go
 reflection.Register(s)
 ```
 
@@ -134,7 +134,7 @@ gRPC Web UI available at http://127.0.0.1:63027/
 
 在浏览器中访问：`http://127.0.0.1:63027/`
 
-![](https://github.com/xinliangnote/Go/blob/master/02-Go%20gRPC/images/2_grpc_2.gif)
+![2_grpc_2.gif](images/2_grpc_2-165130872004211.gif)
 
 到这，我们看到 Service name、Method name 都出来了，传输参数直接在页面上进行操作即可。
 

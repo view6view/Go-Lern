@@ -2,7 +2,7 @@
 
 在使用 `gin` 开发接口的时候，返回接口数据是这样写的。
 
-```
+```go
 type response struct {
 	Code int         `json:"code"`
 	Msg  string      `json:"msg"`
@@ -39,7 +39,7 @@ c.JSON(http.StatusOK, errno.OK.WithData(data).WithID(c.GetString("trace-id")))
 
 ## errno 包源码
 
-```
+```go
 // errno/errno.go
 
 package errno
@@ -108,7 +108,7 @@ func (e *err) ToString() string {
 
 ```
 
-```
+```go
 // errno/code.go
 
 package errno
