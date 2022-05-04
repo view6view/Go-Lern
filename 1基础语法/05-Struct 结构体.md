@@ -4,7 +4,7 @@
 
 ## 声明结构体
 
-```
+```go
 //demo_11.go
 package main
 
