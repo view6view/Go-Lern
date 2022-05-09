@@ -1,4 +1,4 @@
-package hot
+package main
 
 /**
 两数之和
@@ -67,4 +67,112 @@ func addTwoNumbers(l1 *ListNode, l2 *ListNode) (head *ListNode) {
 		tail.Next = &ListNode{Val: carry}
 	}
 	return
+}
+
+/**
+下一个排列
+https://leetcode-cn.com/problems/next-permutation/
+*/
+func nextPermutation(nums []int) {
+	len := len(nums)
+
+	if len <= 1 {
+		return
+	}
+
+	i, j, k := len-2, len-1, len-1
+
+	// 找到num[i] < nums[j]
+	for j > 0 && nums[i] >= nums[j] {
+		i--
+		j--
+	}
+
+	if j > 0 {
+		// 从最后一个数向前开始找到第一个大于 nums[i]的数据
+		for nums[i] >= nums[k] {
+			k--
+		}
+		// 交换nums[i] nums[k]
+		nums[i], nums[k] = nums[k], nums[i]
+	}
+
+	// 反转nums[j:end]
+	for begin, end := j, len-1; begin < end; begin, end = begin+1, end-1 {
+		// 交换
+		nums[begin], nums[end] = nums[end], nums[begin]
+	}
+}
+
+/**
+https://leetcode.cn/problems/search-in-rotated-sorted-array/
+搜索旋转排序数组
+*/
+func search(nums []int, target int) int {
+	len := len(nums)
+	if len == 0 {
+		return -1
+	}
+	left, right := 0, len-1
+	for left <= right {
+		mid := (left + right) / 2
+		if target == nums[mid] {
+			return mid
+		}
+		if nums[mid] < nums[right] { // 右边有序
+			if target > nums[mid] && target <= nums[right] {
+				left = mid + 1
+			} else {
+				right = mid - 1
+			}
+		} else { // 左边有序
+			if target >= nums[left] && target < nums[mid] {
+				right = mid - 1
+			} else {
+				left = mid + 1
+			}
+		}
+	}
+	return -1
+}
+
+/**
+在排序数组中查找元素的第一个和最后一个位置
+https://leetcode.cn/problems/find-first-and-last-position-of-element-in-sorted-array/
+*/
+func searchRange(nums []int, target int) []int {
+	len := len(nums)
+	left, right := 0, len-1
+	if len == 0 || target < nums[left] || target > nums[right] {
+		return []int{-1, -1}
+	}
+	for left <= right {
+		mid := (left + right) / 2
+
+		// 找到值
+		if target == nums[mid] {
+			left = mid - 1
+			right = mid + 1
+			for left > -1 && nums[left] == nums[mid] {
+				left--
+			}
+			for right < len && nums[right] == nums[mid] {
+				right++
+			}
+			return []int{left + 1, right - 1}
+		}
+
+		if target < nums[mid] { // 左边
+			right = mid - 1
+			for right >= left && nums[right] == nums[mid] {
+				right--
+			}
+		} else { // 右边
+			left = mid + 1
+			for left <= right && nums[left] == nums[mid] {
+				left++
+			}
+		}
+	}
+	return []int{-1, -1}
 }
