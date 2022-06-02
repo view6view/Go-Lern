@@ -2,6 +2,7 @@ package offer2
 
 import (
 	"container/list"
+	"math"
 	"strings"
 )
 
@@ -296,5 +297,111 @@ func levelOrder(root *TreeNode) []int {
 			l.PushBack(front.Right)
 		}
 	}
+	return res
+}
+
+/**
+开始 后进
+第一层 前出(lr),后进(先l后r)
+第二层 后出(rl),前进(先r后l)
+第三层 前出(lr),后出(先l后r)
+https://leetcode.cn/problems/cong-shang-dao-xia-da-yin-er-cha-shu-iii-lcof/
+*/
+func levelOrder3(root *TreeNode) [][]int {
+	res := make([][]int, 0)
+	if root == nil {
+		return res
+	}
+	deque := list.New()
+	// 定义是否式left to right
+	lr := true
+
+	packageLevel := func(curSize int) int {
+		level := make([]int, curSize)
+		if lr {
+			for i := 0; i < curSize; i++ {
+				treeNode := deque.Remove(deque.Front()).(*TreeNode)
+				level[i] = treeNode.Val
+				if treeNode.Left != nil {
+					deque.PushBack(treeNode.Left)
+				}
+				if treeNode.Right != nil {
+					deque.PushBack(treeNode.Right)
+				}
+			}
+		} else {
+			for i := 0; i < curSize; i++ {
+				treeNode := deque.Remove(deque.Back()).(*TreeNode)
+				level[i] = treeNode.Val
+				if treeNode.Right != nil {
+					deque.PushFront(treeNode.Right)
+				}
+				if treeNode.Left != nil {
+					deque.PushFront(treeNode.Left)
+				}
+			}
+		}
+		res = append(res, level)
+		return deque.Len()
+	}
+
+	deque.PushBack(root)
+	size := 1
+	for size > 0 {
+		size = packageLevel(size)
+		lr = !lr
+	}
+	return res
+}
+
+/**
+二叉搜索树的后序遍历序列!
+https://leetcode.cn/problems/er-cha-sou-suo-shu-de-hou-xu-bian-li-xu-lie-lcof/
+*/
+func verifyPostorder(postorder []int) bool {
+	end := len(postorder) - 1
+	stack := list.New()
+	pre := math.MaxInt
+	for i := end; i > -1; i-- {
+		if postorder[i] > pre {
+			return false
+		}
+		for stack.Len() > 0 && stack.Back().Value.(int) > postorder[i] {
+			pre = stack.Remove(stack.Back()).(int)
+		}
+		stack.PushBack(postorder[i])
+	}
+	return true
+}
+
+/**
+二叉树中和为某一值的路径
+https://leetcode.cn/problems/er-cha-shu-zhong-he-wei-mou-yi-zhi-de-lu-jing-lcof/
+*/
+func pathSum(root *TreeNode, target int) [][]int {
+	var res [][]int
+	if root == nil {
+		return res
+	}
+
+	var dfs func(node *TreeNode, preTotal int, preArr []int)
+
+	dfs = func(node *TreeNode, preTotal int, preArr []int) {
+		preArr = append(preArr, node.Val)
+		preTotal += node.Val
+		if node.Left == nil && node.Right == nil {
+			if preTotal == target {
+				res = append(res, append([]int(nil), preArr...))
+			}
+		} else {
+			if node.Left != nil {
+				dfs(node.Left, preTotal, preArr)
+			}
+			if node.Right != nil {
+				dfs(node.Right, preTotal, preArr)
+			}
+		}
+	}
+	dfs(root, 0, []int{})
 	return res
 }
