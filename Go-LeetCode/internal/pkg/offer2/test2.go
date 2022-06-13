@@ -212,3 +212,119 @@ func lengthOfLongestSubstring(s string) int {
 	}
 	return res
 }
+
+/**
+数组中数字出现的次数
+https://leetcode.cn/problems/shu-zu-zhong-shu-zi-chu-xian-de-ci-shu-lcof/
+*/
+func singleNumbers(nums []int) []int {
+	x, y, n, m := 0, 0, 0, 1
+	for _, num := range nums {
+		n ^= num
+	}
+	// 此时n的值为 x ^ y
+	// x 和 y 的值不相同，x ^ y 的某二进制位为1，则x 与 y在此二进制位上一定不同，找出这个位置
+	// 或者m = n - (n & (n - 1)) 原理是 n & (n-1)可以把n二进制最右边的1变为0，然后拿n减去这个值，就是我们需要的m了
+	for m&n == 0 {
+		m <<= 1
+	}
+	for _, num := range nums {
+		// 通过&m将num分为两种情况，则一定可以把x y 区分开来
+		if num&m == 0 {
+			x ^= num
+		} else {
+			y ^= num
+		}
+	}
+	return []int{x, y}
+}
+
+/**
+丑数
+https://leetcode.cn/problems/chou-shu-lcof/
+*/
+func nthUglyNumber(n int) int {
+	var min = func(a, b int) int {
+		if a < b {
+			return a
+		}
+		return b
+	}
+	a, b, c := 0, 0, 0
+	dp := make([]int, n)
+	dp[0] = 1
+	for i := 1; i < n; i++ {
+		n2, n3, n5 := 2*dp[a], 3*dp[b], 5*dp[c]
+		dp[i] = min(min(n2, n3), n5)
+		if dp[i] == n2 {
+			a++
+		}
+		if dp[i] == n3 {
+			b++
+		}
+		if dp[i] == n5 {
+			c++
+		}
+	}
+	return dp[n-1]
+}
+
+/**
+数组中数字出现的次数 II
+https://leetcode.cn/problems/shu-zu-zhong-shu-zi-chu-xian-de-ci-shu-ii-lcof/
+*/
+func singleNumber(nums []int) int {
+	a := 0
+	b := 0
+	for _, c := range nums {
+		a, b = a&^c|b&c, b&^c|^a&^b&c
+	}
+	return ^a & b
+}
+
+/**
+和为s的连续正数序列
+https://leetcode.cn/problems/he-wei-sde-lian-xu-zheng-shu-xu-lie-lcof/
+*/
+func findContinuousSequence(target int) [][]int {
+	res := make([][]int, 0)
+	i, j, s := 1, 2, 3
+	for i < j {
+		if s == target {
+			nums := make([]int, j-i+1)
+			for k := i; k <= j; k++ {
+				nums[k-i] = k
+			}
+			res = append(res, nums)
+		}
+		if s >= target {
+			s -= i
+			i++
+		} else {
+			j++
+			s += j
+		}
+	}
+	return res
+}
+
+/**
+n个骰子的点数
+https://leetcode.cn/problems/nge-tou-zi-de-dian-shu-lcof/
+*/
+func dicesProbability(n int) []float64 {
+	dp := make([]float64, 6)
+	for i := range dp {
+		dp[i] = 1.0 / 6.0
+	}
+	for i := 2; i <= n; i++ {
+		tmp := make([]float64, i*5+1)
+		for j := 0; j < len(dp); j++ {
+			for k := 0; k < 6; k++ {
+				tmp[j+k] += dp[j] / 6.0
+			}
+		}
+		dp = tmp
+	}
+	return dp
+}
