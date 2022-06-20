@@ -2,6 +2,7 @@ package offer2
 
 import (
 	"fmt"
+	"math"
 	"sort"
 	"strconv"
 	"strings"
@@ -327,4 +328,140 @@ func dicesProbability(n int) []float64 {
 		dp = tmp
 	}
 	return dp
+}
+
+/**
+圆圈中最后剩下的数字
+https://leetcode.cn/problems/yuan-quan-zhong-zui-hou-sheng-xia-de-shu-zi-lcof/
+*/
+func lastRemaining(n int, m int) int {
+	f := 0
+	for i := 2; i <= n; i++ {
+		f = (f + m) % i
+	}
+	return f
+}
+
+/**
+股票的最大利润
+https://leetcode.cn/problems/gu-piao-de-zui-da-li-run-lcof/
+*/
+func maxProfit(prices []int) int {
+	var Min = func(a, b int) int {
+		if a < b {
+			return a
+		}
+		return b
+	}
+	var Max = func(a, b int) int {
+		if a > b {
+			return a
+		}
+		return b
+	}
+
+	min, profit := math.MaxInt, 0
+	for _, price := range prices {
+		min = Min(min, price)
+		profit = Max(profit, price-min)
+	}
+	return profit
+}
+
+/**
+求1+2+…+n
+https://leetcode.cn/problems/qiu-12n-lcof/
+*/
+func sumNums(n int) int {
+	//return n * (n + 1) / 2
+	_ = n > 0 && func() bool { n += sumNums(n - 1); return true }()
+	return n
+}
+
+/**
+不用加减乘除做加法
+https://leetcode.cn/problems/bu-yong-jia-jian-cheng-chu-zuo-jia-fa-lcof/
+*/
+func add(a int, b int) int {
+	for b != 0 { // 当进位为 0 时候跳出
+		c := (a & b) << 1 // c = 进位
+		a ^= b            // a = 非进位和
+		b = c             // b = 进位
+	}
+	return a
+}
+
+/**
+构建乘积数组
+https://leetcode.cn/problems/gou-jian-cheng-ji-shu-zu-lcof/
+*/
+func constructArr(a []int) []int {
+	zeroLastIdx := -1
+	zeroCount := 0
+	total := 1
+	for i, num := range a {
+		if num == 0 {
+			zeroLastIdx = i
+			zeroCount++
+		} else {
+			total *= num
+		}
+	}
+	if zeroCount == 0 {
+		for i, num := range a {
+			a[i] = total / num
+		}
+	} else if zeroCount == 1 {
+		for i := range a {
+			if i != zeroLastIdx {
+				a[i] = 0
+			} else {
+				a[i] = total
+			}
+		}
+	} else {
+		for i := range a {
+			a[i] = 0
+		}
+	}
+
+	return a
+}
+
+/**
+把字符串转换成整数
+https://leetcode.cn/problems/ba-zi-fu-chuan-zhuan-huan-cheng-zheng-shu-lcof/
+*/
+func strToInt(str string) int {
+	res, bndry := 0, math.MaxInt32/10
+	idx, sign, len := 0, 1, len(str)
+	if len == 0 {
+		return 0
+	}
+	for str[idx] == ' ' {
+		idx++
+		if idx == len {
+			return 0
+		}
+	}
+	if str[idx] == '-' {
+		sign = -1
+	}
+	if str[idx] == '-' || str[idx] == '+' {
+		idx++
+	}
+	for ; idx < len; idx++ {
+		if str[idx] < '0' || str[idx] > '9' {
+			break
+		}
+		if res > bndry || (res == bndry && str[idx] > '7') {
+			if sign == 1 {
+				return math.MaxInt32
+			} else {
+				return math.MinInt32
+			}
+		}
+		res = res*10 + int(str[idx]-'0')
+	}
+	return sign * res
 }
