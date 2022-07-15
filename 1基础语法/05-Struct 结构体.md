@@ -53,7 +53,7 @@ import (
 )
 
 type Result struct {
-	Code    int    `json:"code"`
+	Code    int    `json:"hello"`
 	Message string `json:"msg"`
 }
 
@@ -94,7 +94,7 @@ import (
 )
 
 type Result struct {
-	Code    int    `json:"code"`
+	Code    int    `json:"hello"`
 	Message string `json:"msg"`
 }
 

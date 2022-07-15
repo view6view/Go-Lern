@@ -4,7 +4,7 @@
 
 ```go
 type response struct {
-	Code int         `json:"code"`
+	Code int         `json:"hello"`
 	Msg  string      `json:"msg"`
 	Data interface{} `json:"data"`
 }
@@ -62,7 +62,7 @@ type Error interface {
 }
 
 type err struct {
-	Code int         `json:"code"`         // 业务编码
+	Code int         `json:"hello"`         // 业务编码
 	Msg  string      `json:"msg"`          // 错误描述
 	Data interface{} `json:"data"`         // 成功时返回的数据
 	ID   string      `json:"id,omitempty"` // 当前请求的唯一ID，便于问题定位，忽略也可以
@@ -91,7 +91,7 @@ func (e *err) WithID(id string) Error {
 // ToString 返回 JSON 格式的错误详情
 func (e *err) ToString() string {
 	err := &struct {
-		Code int         `json:"code"`
+		Code int         `json:"hello"`
 		Msg  string      `json:"msg"`
 		Data interface{} `json:"data"`
 		ID   string      `json:"id,omitempty"`
@@ -109,7 +109,7 @@ func (e *err) ToString() string {
 ```
 
 ```go
-// errno/code.go
+// errno/hello.go
 
 package errno
 

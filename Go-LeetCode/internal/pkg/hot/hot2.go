@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Go-LeetCode/internal/pkg/data"
+	"Go-LeetCode/internal/pkg/data/bitmap/v1"
 	"container/list"
 	"math"
 )
@@ -148,7 +148,7 @@ func longestConsecutive1(nums []int) int {
 		max = Max(max, num)
 		min = Min(min, num)
 	}
-	bitMap := data.CreateNewBitMap(max - min)
+	bitMap := v1.CreateNewBitMap(max - min)
 	for _, num := range nums {
 		bitMap.Add(num)
 	}

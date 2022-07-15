@@ -1,4 +1,4 @@
-package data
+package v1
 
 // BitMap 位图结构体
 type BitMap struct {
